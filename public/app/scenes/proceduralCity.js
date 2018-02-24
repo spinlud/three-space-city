@@ -14,11 +14,22 @@ const proceduralCity = function() {
             camera,
             scene,
             clock,
-            firstPersonCtrls
+            orbitCtrls, firstPersonCtrls,
+            isMobile
     ;
 
 
+    function detectMobile() {
+        if ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+            return true;
+        }
+        return false;
+    }
+
+
     function init() {
+        isMobile = detectMobile();
+
         webglContainer = document.getElementById("webglContainer");
         width = webglContainer.offsetWidth;
         height = webglContainer.offsetHeight;
@@ -47,10 +58,16 @@ const proceduralCity = function() {
         scene.add( light );
 
         // controls
-        firstPersonCtrls = new T.FirstPersonControls( camera );
-        firstPersonCtrls.movementSpeed = 80;
-        firstPersonCtrls.lookSpeed = 0.08;
-        firstPersonCtrls.lookVertical = true;
+        if (isMobile) {
+            orbitCtrls = new T.OrbitControls(camera);
+        }
+        else {
+            firstPersonCtrls = new T.FirstPersonControls( camera );
+            firstPersonCtrls.movementSpeed = 80;
+            firstPersonCtrls.lookSpeed = 0.08;
+            firstPersonCtrls.lookVertical = true;
+        }
+
 
         // clock
         clock = new T.Clock();
@@ -222,8 +239,12 @@ const proceduralCity = function() {
 
 
     function render() {
-
-        firstPersonCtrls.update(clock.getDelta());
+        if (isMobile) {
+            orbitCtrls.update();
+        }
+        else {
+            firstPersonCtrls.update(clock.getDelta());
+        }
         renderer.render(scene, camera);
         requestAnimationFrame(render);
 

@@ -32,7 +32,9 @@ module.exports = {
             "./node_modules/babel-polyfill/dist/polyfill.min.js",
             "./public/libs/*.js",
             "./node_modules/three/build/three.min.js",
-            "./node_modules/three/examples/js/controls/FirstPersonControls.js"
+            "./node_modules/three/examples/js/controls/FirstPersonControls.js",
+            "./node_modules/three/examples/js/controls/OrbitControls.js"
+
         ]
     },
 
