@@ -1,0 +1,34 @@
+/*
+ * ---------------------------------------------------------------------------------------
+ * _variables.scss
+ * ---------------------------------------------------------------------------------------
+ */
+
+
+// media queries variables
+$mobile-min-pixel-ratio: 2;
+$smartphone-min-width: 320px;
+$tablet-min-width: 512px;
+$desktop-min-width: 1024px;
+
+
+// layout variables
+$body-margin: 0;
+$body-padding: 1em;
+$body-padding-desktop: 8em;
+$body-padding-tablet: 4em;
+$header-height: 64px;
+$header-height-smartphone: 40px;
+$footer-height: 3em;
+
+
+// track variables
+$track-container-height: 2em;
+
+
+// hamburgers
+$hamburger-width: 40px;
+$hamburger-height: 30px;
+$hamburger-width-smartphone: 28px;
+$hamburger-height-smartphone: 20px;
+

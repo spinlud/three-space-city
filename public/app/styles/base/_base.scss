@@ -1,0 +1,52 @@
+/*
+ * ---------------------------------------------------------------------------------------
+ * base.scss
+ * ---------------------------------------------------------------------------------------
+ */
+
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+
+html {
+
+}
+
+
+body {
+  min-height: 100%;
+  position: relative;
+
+  font-family: "Helvetica Neue", "Helvetica";
+  font-style: normal;
+  font-weight: normal;
+  text-align: justify;
+  text-justify: inter-word;
+  letter-spacing: 2px;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: none;
+}
+
+
+body *
+{
+  text-shadow: none;
+}
+
+
+canvas {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  outline: none;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0); /* mobile webkit */
+}
+
+

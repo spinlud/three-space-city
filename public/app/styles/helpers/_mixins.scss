@@ -1,0 +1,215 @@
+/*
+ * ---------------------------------------------------------------------------------------
+ * _mixins.scss
+ * ---------------------------------------------------------------------------------------
+ */
+
+@mixin media($min, $pixel-ratio: 1, $orientation: false) {
+  @media only screen and (min-width: $min) and (-webkit-min-device-pixel-ratio: $pixel-ratio) {
+    @content
+  }
+}
+
+@mixin media-range($min, $max, $pixel-ratio: 1, $orientation: false) {
+  @media only screen and (min-width: $min) and (max-width: $max) and (-webkit-min-device-pixel-ratio: $pixel-ratio) {
+    @content
+  }
+}
+
+
+@mixin desktop {
+  @media (min-width: #{$desktop-min-width}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: #{$tablet-min-width}) and (max-width: #{$desktop-min-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin smartphone {
+  @media (min-width: #{$smartphone-min-width}) and (max-width: #{$tablet-min-width - 1px}) {
+    @content;
+  }
+}
+
+/* Smartphones (portrait and landscape) ----------- */
+@mixin smartphones {
+  @media only screen
+    and (min-width : 260px)
+    and (max-width : 700px)
+    //and (-webkit-device-pixel-ratio: 0), (-webkit-device-pixel-ratio: 1), (-webkit-device-pixel-ratio: 2), (-webkit-device-pixel-ratio: 3), (-webkit-device-pixel-ratio: 4)
+  {
+    @content
+  }
+}
+
+@mixin smartphone-landscape {
+  @media only screen and (min-device-width: 319px) and (max-device-width: 700px) and (orientation: landscape) {
+    @content;
+  }
+}
+
+
+// small screen
+@mixin small-screen {
+  @media screen and (min-width: 200px) and (max-width: 700px) {
+    @content;
+  }
+}
+
+
+//@mixin media-mobile() {
+//  @media only screen and (min-width: $mobile_min_width) and (max-width: $mobile_max_width) and (-webkit-min-device-pixel-ratio: $mobile_min_pixel_ratio) {
+//    @content
+//  }
+//}
+
+
+//@mixin media-tablet() {
+//  @media only screen and (min-width: #{$mobile-max-width + 1}) and (max-width: #{$tablet-max-width}) {
+//    @content
+//  }
+//}
+//
+//
+//@mixin media-desktop() {
+//  @media only screen and (min-width: #{$tablet-max-width + 1}) {
+//    @content
+//  }
+//}
+
+
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+  border-radius: $radius;
+  background-clip: padding-box;  /* stops bg color from leaking outside the border: */
+}
+
+
+/// Mixin printing a linear-gradient
+/// as well as a plain color fallback
+/// and the `-webkit-` prefixed declaration
+/// @access public
+/// @param {Keyword | Angle} $direction - Linear gradient direction
+/// @param {Arglist} $color-stops - List of color-stops composing the gradient
+@mixin linear-gradient($direction, $color-stops...) {
+  background: nth(nth($color-stops, 1), 1);
+  background: -webkit-linear-gradient(legacy-direction($direction), $color-stops);
+  background: linear-gradient($direction, $color-stops);
+}
+
+
+@mixin box-shadow($top, $left, $blur, $color, $inset: false) {
+  @if $inset {
+    -webkit-box-shadow:inset $top $left $blur $color;
+    -moz-box-shadow:inset $top $left $blur $color;
+    box-shadow:inset $top $left $blur $color;
+  } @else {
+    -webkit-box-shadow: $top $left $blur $color;
+    -moz-box-shadow: $top $left $blur $color;
+    box-shadow: $top $left $blur $color;
+  }
+}
+
+
+@mixin overflow-scroll {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  -moz-overflow-scrolling: touch;
+  -o-overflow-scrolling: touch;
+  -ms-overflow-scrolling: touch;
+  overflow-scrolling: touch;
+}
+
+
+@mixin transition($transition...) {
+  -moz-transition:    $transition;
+  -o-transition:      $transition;
+  -webkit-transition: $transition;
+  transition:         $transition;
+}
+
+
+@mixin transition-property($property...) {
+  -moz-transition-property:    $property;
+  -o-transition-property:      $property;
+  -webkit-transition-property: $property;
+  transition-property:         $property;
+}
+
+
+@mixin transition-duration($duration...) {
+  -moz-transition-property:    $duration;
+  -o-transition-property:      $duration;
+  -webkit-transition-property: $duration;
+  transition-property:         $duration;
+}
+
+
+@mixin transition-timing-function($timing...) {
+  -moz-transition-timing-function:    $timing;
+  -o-transition-timing-function:      $timing;
+  -webkit-transition-timing-function: $timing;
+  transition-timing-function:         $timing;
+}
+
+
+@mixin transition-delay($delay...) {
+  -moz-transition-delay:    $delay;
+  -o-transition-delay:      $delay;
+  -webkit-transition-delay: $delay;
+  transition-delay:         $delay;
+}
+
+
+@mixin transform($transforms) {
+  -moz-transform: $transforms;
+  -o-transform: $transforms;
+  -ms-transform: $transforms;
+  -webkit-transform: $transforms;
+  transform: $transforms;
+}
+
+
+@mixin rotate ($deg) {
+  @include transform(rotate(#{$deg}deg));
+}
+
+
+@mixin scale($scale) {
+  @include transform(scale($scale));
+}
+
+
+@mixin translate ($x, $y) {
+  @include transform(translate($x, $y));
+}
+
+
+
+@mixin skew ($x, $y) {
+  @include transform(skew(#{$x}deg, #{$y}deg));
+}
+
+
+@mixin transform-origin ($origin) {
+  moz-transform-origin: $origin;
+  -o-transform-origin: $origin;
+  -ms-transform-origin: $origin;
+  -webkit-transform-origin: $origin;
+  transform-origin: $origin;
+}
+
+
+// Background Gradient: Radial
+@mixin radial-background($start-colour, $start-position, $end-colour, $end-position) {
+  background: -moz-radial-gradient(center, ellipse cover, $start-colour $start-position, $end-colour $end-position);
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, Colour-stop($start-position,$start-colour), Colour-stop($end-position,$end-colour));
+  background: -webkit-radial-gradient(center, ellipse cover, $start-colour $start-position,$end-colour $end-position);
+  background: -o-radial-gradient(center, ellipse cover, $start-colour $start-position,$end-colour $end-position);
+  background: -ms-radial-gradient(center, ellipse cover, $start-colour $start-position,$end-colour $end-position);
+  background: radial-gradient(ellipse at center, $start-colour $start-position,$end-colour $end-position);
+}
