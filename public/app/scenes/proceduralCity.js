@@ -4,6 +4,7 @@
  * ---------------------------------------------------------------------------------------
  */
 
+"use strict";
 
 
 const proceduralCity = function() {
@@ -15,15 +16,13 @@ const proceduralCity = function() {
             scene,
             clock,
             orbitCtrls, firstPersonCtrls,
+            loadingManager,
             isMobile
     ;
 
 
     function detectMobile() {
-        if ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-            return true;
-        }
-        return false;
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
 
 
@@ -34,15 +33,29 @@ const proceduralCity = function() {
         width = webglContainer.offsetWidth;
         height = webglContainer.offsetHeight;
 
+        // init loadingManager
+        loadingManager = new T.LoadingManager();
+        loadingManager.onLoad = () => {
+            console.log("[LoadingManager]", "All load!");
+            document.getElementById("loading").style.display = "none";
+            setTimeout(() => {
+                initInfo();
+                render();
+            }, 10);
+        };
+        loadingManager.onProgress = (url, itemsLoaded, itemsTotal) => {
+            // console.log(url, itemsLoaded, itemsTotal)
+        };
+
         // init renderer
         renderer = new T.WebGLRenderer({alpha: true, antialias: true});
         renderer.setSize(width, height);
         webglContainer.appendChild(renderer.domElement);
 
-        // inti camera
-        camera = new T.PerspectiveCamera(45, width / height, 0.1, 4000);
-        camera.position.set(0, 150, 0);
-        camera.lookAt(0, 0, 0);
+        // init camera
+        camera = new T.PerspectiveCamera(45, width / height, 0.1, 8000);
+        camera.position.set(-576.5, 75, -109);
+        camera.lookAt(1000, 100, 0);
 
         // init scene
         scene = new T.Scene();
@@ -74,17 +87,13 @@ const proceduralCity = function() {
 
 
         generateSkyBox();
-        generateCity(8500);
+        generateStarsPlane();
+        generateCity(12000);
         window.addEventListener("resize", onWindowResize, false);
-        render();
     }
 
 
     function generateCity(n) {
-
-        let plane = new T.Mesh( new T.PlaneGeometry( 2000, 2000 ), new T.MeshBasicMaterial( { color: 0x101018 } ) );
-        plane.rotation.x = - 90 * Math.PI / 180;
-        scene.add( plane );
 
         let cityGeometry = new T.Geometry();
 
@@ -131,7 +140,8 @@ const proceduralCity = function() {
         let sign = Math.round(Math.random()) * 2 - 1;
         let rndV = sign * Math.random() * Math.random() * Math.random() * Math.random() * 0.05;
         topColor.r = clamp(topColor.r + rndV);
-        bottomColor.r = clamp(bottomColor.r + rndV * 0.1);
+        // bottomColor.r = clamp(bottomColor.r + rndV * 0.1);
+
 
         geometry.faces[0].vertexColors =
             geometry.faces[2].vertexColors =
@@ -149,10 +159,10 @@ const proceduralCity = function() {
 
         let mesh = new T.Mesh(geometry);
 
-        mesh.position.x = Math.floor( Math.random() * 200 - 100 ) * 10;
-        mesh.position.z = Math.floor( Math.random() * 200 - 100 ) * 10;
-        mesh.rotation.y = Math.random()*Math.PI*2;
-        mesh.scale.x  = Math.random()*Math.random()*Math.random()*Math.random() * 50 + 10;
+        mesh.position.x = Math.floor( Math.random() * 200 - 100 ) * 20;
+        mesh.position.z = Math.floor( Math.random() * 200 - 100 ) * 20;
+        mesh.rotation.y = Math.random() * Math.random() < 0.5 ? Math.PI * 0.25 : 0;
+        mesh.scale.x  = Math.random() * Math.random() * Math.random() * Math.random() * 50 + 10;
         mesh.scale.z  = mesh.scale.x;
         mesh.scale.y  = (Math.random() * Math.random() * Math.random() * mesh.scale.x) * 8 + 8;
 
@@ -200,18 +210,19 @@ const proceduralCity = function() {
 
 
     function generateSkyBox() {
-        let loader = new T.CubeTextureLoader();
+        let loader = new T.CubeTextureLoader(loadingManager);
 
         let textures = [
-            'app/assets/textures/nebula/left.jpg',
-            'app/assets/textures/nebula/right.jpg',
-            'app/assets/textures/nebula/top.jpg',
-            'app/assets/textures/nebula/bottom.jpg',
-            'app/assets/textures/nebula/front.jpg',
-            'app/assets/textures/nebula/back.jpg'
+            "app/assets/textures/blue/bkg1_right.png",
+            "app/assets/textures/blue/bkg1_left.png",
+            "app/assets/textures/blue/bkg1_top.png",
+            "app/assets/textures/blue/bkg1_bot.png",
+            "app/assets/textures/blue/bkg1_front.png",
+            "app/assets/textures/blue/bkg1_back.png",
         ];
 
-        let textureCube = loader.load( textures );
+
+        let textureCube = loader.load(textures);
         let shader = T.ShaderLib[ "cube" ];
         shader.uniforms[ "tCube" ].value = textureCube;
         let skyMaterial = new T.ShaderMaterial( {
@@ -223,13 +234,52 @@ const proceduralCity = function() {
         } );
         skyMaterial.needsUpdate = true;
 
-        let skyGeometry = new T.BoxGeometry( 3000, 3000, 3000, 1,1,1 );
+        let skyGeometry = new T.BoxGeometry(6000, 6000, 6000, 1, 1, 1);
         let skyBox = new T.Mesh( skyGeometry, skyMaterial );
         scene.add( skyBox );
     }
 
 
-    function onWindowResize( event ) {
+    function generateStarsPlane() {
+        let loader = new T.CubeTextureLoader(loadingManager);
+
+        let textures = [
+            "app/assets/textures/lightblue/right.png",
+            "app/assets/textures/lightblue/left.png",
+            "app/assets/textures/lightblue/top.png",
+            "app/assets/textures/lightblue/bot.png",
+            "app/assets/textures/lightblue/front.png",
+            "app/assets/textures/lightblue/back.png",
+        ];
+
+        let planeMaterial = new T.MeshBasicMaterial({
+            color: 0xffffff,
+            envMap: loader.load(textures),
+            transparent: true,
+            opacity: 0.5,
+            blending: T.AdditiveBlending,
+            side: T.DoubleSide
+        });
+
+        let plane = new T.Mesh( new T.PlaneGeometry( 4000, 4000 ), planeMaterial);
+        plane.rotation.x = - 90 * Math.PI / 180;
+        scene.add(plane);
+    }
+
+
+    function initInfo() {
+        const info = document.getElementById("info");
+        if (isMobile) {
+            info.innerText = "Drag to look around. Pin to zoom."
+        }
+        else {
+            info.innerText = "Move mouse to look around; click & hold or arrow keys to move."
+        }
+        info.style.display = "block";
+    }
+
+
+    function onWindowResize(event) {
         width = webglContainer.offsetWidth;
         height = webglContainer.offsetHeight;
         renderer.setSize( width, height );

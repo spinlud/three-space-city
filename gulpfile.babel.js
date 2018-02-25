@@ -55,7 +55,7 @@ gulp.task("build_js", () => {
         .pipe(source("app.bundle.min.js"))
         .pipe(buffer())
         .pipe(sourcemaps.init({loadMaps: mode}))
-        .pipe(uglify())
+        // .pipe(uglify())
         .pipe(sourcemaps.write("./"))
         .pipe(gulp.dest(config.build.js))
 });
