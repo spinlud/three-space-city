@@ -18,22 +18,6 @@ module.exports = merge(common, {
             "WEBPACK_MODE": `"production"`
         }),
         new webpack.optimize.AggressiveMergingPlugin(),
-        new FaviconsWebpackPlugin({
-            logo: path.resolve(__dirname, "public/app/assets/logos/favicon.png"),
-            icons: {
-                android: false,
-                appleIcon: false,
-                appleStartup: false,
-                coast: false,
-                favicons: true,
-                firefox: false,
-                opengraph: false,
-                twitter: false,
-                yandex: false,
-                windows: false
-            }
-        }),
-
     ],
     optimization: {
         minimize: true,
