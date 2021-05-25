@@ -6,18 +6,17 @@
 
 "use strict";
 
-
-const proceduralCity = function() {
+const proceduralCity = function () {
     const T = THREE;
 
-    let     webglContainer, width, height,
-            renderer,
-            camera,
-            scene,
-            clock,
-            orbitCtrls, firstPersonCtrls,
-            loadingManager,
-            isMobile
+    let webglContainer, width, height,
+        renderer,
+        camera,
+        scene,
+        clock,
+        orbitCtrls, firstPersonCtrls,
+        loadingManager,
+        isMobile
     ;
 
 
@@ -32,6 +31,7 @@ const proceduralCity = function() {
         webglContainer = document.getElementById("webglContainer");
         width = webglContainer.offsetWidth;
         height = webglContainer.offsetHeight;
+        console.log(width, height);
 
         // init loadingManager
         loadingManager = new T.LoadingManager();
@@ -59,23 +59,22 @@ const proceduralCity = function() {
 
         // init scene
         scene = new T.Scene();
-        scene.fog = new T.FogExp2( 0xd0e0f0, 0.0007 );
+        scene.fog = new T.FogExp2(0xd0e0f0, 0.0007);
 
         // axes helper
         let axesHelper = new T.AxesHelper(20);
         // scene.add(axesHelper);
 
         // light
-        let light = new T.HemisphereLight( 0xfffff0, 0x101020, 1.25 );
-        light.position.set( 0.75, 1, 0.25 );
-        scene.add( light );
+        let light = new T.HemisphereLight(0xfffff0, 0x101020, 1.25);
+        light.position.set(0.75, 1, 0.25);
+        scene.add(light);
 
         // controls
         if (isMobile) {
             orbitCtrls = new T.OrbitControls(camera);
-        }
-        else {
-            firstPersonCtrls = new T.FirstPersonControls( camera );
+        } else {
+            firstPersonCtrls = new T.FirstPersonControls(camera);
             firstPersonCtrls.movementSpeed = 80;
             firstPersonCtrls.lookSpeed = 0.08;
             firstPersonCtrls.lookVertical = true;
@@ -97,13 +96,13 @@ const proceduralCity = function() {
 
         let cityGeometry = new T.Geometry();
 
-        let geometry = new T.BoxGeometry( 1, 1, 1 );
+        let geometry = new T.BoxGeometry(1, 1, 1);
         // change pivot from center to bottom of the cube
-        geometry.applyMatrix(new T.Matrix4().makeTranslation( 0, 0.5, 0 ));
+        geometry.applyMatrix(new T.Matrix4().makeTranslation(0, 0.5, 0));
 
         // remove bottom side, because we will look from up to bottom
-        geometry.faces.splice( 6, 2 );
-        geometry.faceVertexUvs[0].splice( 6, 2 );
+        geometry.faces.splice(6, 2);
+        geometry.faceVertexUvs[0].splice(6, 2);
 
         // uv mapping modified for top side
         geometry.faceVertexUvs[0][4][0].set(0, 0);
@@ -114,20 +113,20 @@ const proceduralCity = function() {
         geometry.faceVertexUvs[0][5][2].set(0, 0);
 
         // building top/bottom colors
-        let light = new T.Color( 0x1050ff );
-        let shadow  = new T.Color( 0x303050 );
+        let light = new T.Color(0x1050ff);
+        let shadow = new T.Color(0x303050);
         let value = 1 - Math.random() * Math.random();
-        let baseColor = new T.Color().setRGB( value + Math.random() * 0.1, value, value + Math.random() * 0.1 );
-        let topColor  = baseColor.clone().multiply( light );
-        let bottomColor = baseColor.clone().multiply( shadow );
+        let baseColor = new T.Color().setRGB(value + Math.random() * 0.1, value, value + Math.random() * 0.1);
+        let topColor = baseColor.clone().multiply(light);
+        let bottomColor = baseColor.clone().multiply(shadow);
 
 
         for (let i = 0; i < n; i++) {
             cityGeometry.mergeMesh(generateBuilding(geometry.clone(), topColor, bottomColor));
         }
 
-        let texture   = new T.Texture( generateTexture() );
-        texture.anisotropy  = renderer.capabilities.getMaxAnisotropy();
+        let texture = new T.Texture(generateTexture());
+        texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
         texture.needsUpdate = true;
 
         let cityMesh = new T.Mesh(cityGeometry, new T.MeshBasicMaterial({vertexColors: T.VertexColors, map: texture}));
@@ -159,12 +158,12 @@ const proceduralCity = function() {
 
         let mesh = new T.Mesh(geometry);
 
-        mesh.position.x = Math.floor( Math.random() * 200 - 100 ) * 20;
-        mesh.position.z = Math.floor( Math.random() * 200 - 100 ) * 20;
+        mesh.position.x = Math.floor(Math.random() * 200 - 100) * 20;
+        mesh.position.z = Math.floor(Math.random() * 200 - 100) * 20;
         mesh.rotation.y = Math.random() * Math.random() < 0.5 ? Math.PI * 0.25 : 0;
-        mesh.scale.x  = Math.random() * Math.random() * Math.random() * Math.random() * 50 + 10;
-        mesh.scale.z  = mesh.scale.x;
-        mesh.scale.y  = (Math.random() * Math.random() * Math.random() * mesh.scale.x) * 8 + 8;
+        mesh.scale.x = Math.random() * Math.random() * Math.random() * Math.random() * 50 + 10;
+        mesh.scale.z = mesh.scale.x;
+        mesh.scale.y = (Math.random() * Math.random() * Math.random() * mesh.scale.x) * 8 + 8;
 
         return mesh;
     }
@@ -179,31 +178,31 @@ const proceduralCity = function() {
 
     function generateTexture() {
 
-        let canvas = document.createElement( 'canvas' );
+        let canvas = document.createElement('canvas');
         canvas.width = 32;
         canvas.height = 64;
 
-        let context = canvas.getContext( '2d' );
+        let context = canvas.getContext('2d');
         context.fillStyle = '#ffffff';
-        context.fillRect( 0, 0, 32, 64 );
+        context.fillRect(0, 0, 32, 64);
 
-        for ( let y = 2; y < 64; y += 2 ) {
-            for ( let x = 0; x < 32; x += 2 ) {
-                let value = Math.floor( Math.random() * 64 );
-                context.fillStyle = 'rgb(' + [ value, value, value ].join( ',' )  + ')';
-                context.fillRect( x, y, 2, 1 );
+        for (let y = 2; y < 64; y += 2) {
+            for (let x = 0; x < 32; x += 2) {
+                let value = Math.floor(Math.random() * 64);
+                context.fillStyle = 'rgb(' + [value, value, value].join(',') + ')';
+                context.fillRect(x, y, 2, 1);
             }
         }
 
-        let canvas2 = document.createElement( 'canvas' );
+        let canvas2 = document.createElement('canvas');
         canvas2.width = 512;
         canvas2.height = 1024;
 
-        context = canvas2.getContext( '2d' );
+        context = canvas2.getContext('2d');
         context.imageSmoothingEnabled = false;
         context.webkitImageSmoothingEnabled = false;
         context.mozImageSmoothingEnabled = false;
-        context.drawImage( canvas, 0, 0, canvas2.width, canvas2.height );
+        context.drawImage(canvas, 0, 0, canvas2.width, canvas2.height);
 
         return canvas2;
     }
@@ -223,20 +222,20 @@ const proceduralCity = function() {
 
 
         let textureCube = loader.load(textures);
-        let shader = T.ShaderLib[ "cube" ];
-        shader.uniforms[ "tCube" ].value = textureCube;
-        let skyMaterial = new T.ShaderMaterial( {
+        let shader = T.ShaderLib["cube"];
+        shader.uniforms["tCube"].value = textureCube;
+        let skyMaterial = new T.ShaderMaterial({
             fragmentShader: shader.fragmentShader,
             vertexShader: shader.vertexShader,
             uniforms: shader.uniforms,
             depthWrite: false,
             side: T.BackSide
-        } );
+        });
         skyMaterial.needsUpdate = true;
 
         let skyGeometry = new T.BoxGeometry(6000, 6000, 6000, 1, 1, 1);
-        let skyBox = new T.Mesh( skyGeometry, skyMaterial );
-        scene.add( skyBox );
+        let skyBox = new T.Mesh(skyGeometry, skyMaterial);
+        scene.add(skyBox);
     }
 
 
@@ -261,8 +260,8 @@ const proceduralCity = function() {
             side: T.DoubleSide
         });
 
-        let plane = new T.Mesh( new T.PlaneGeometry( 4000, 4000 ), planeMaterial);
-        plane.rotation.x = - 90 * Math.PI / 180;
+        let plane = new T.Mesh(new T.PlaneGeometry(4000, 4000), planeMaterial);
+        plane.rotation.x = -90 * Math.PI / 180;
         scene.add(plane);
     }
 
@@ -271,8 +270,7 @@ const proceduralCity = function() {
         const info = document.getElementById("info");
         if (isMobile) {
             info.innerText = "Drag to look around. Pin to zoom."
-        }
-        else {
+        } else {
             info.innerText = "Move mouse to look around; click & hold or arrow keys to move."
         }
         info.style.display = "block";
@@ -282,7 +280,7 @@ const proceduralCity = function() {
     function onWindowResize(event) {
         width = webglContainer.offsetWidth;
         height = webglContainer.offsetHeight;
-        renderer.setSize( width, height );
+        renderer.setSize(width, height);
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
     }
@@ -291,8 +289,7 @@ const proceduralCity = function() {
     function render() {
         if (isMobile) {
             orbitCtrls.update();
-        }
-        else {
+        } else {
             firstPersonCtrls.update(clock.getDelta());
         }
         renderer.render(scene, camera);
@@ -306,4 +303,4 @@ const proceduralCity = function() {
 };
 
 
-export { proceduralCity };
+export {proceduralCity};
